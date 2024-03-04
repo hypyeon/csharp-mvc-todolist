@@ -1,3 +1,4 @@
+/*
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,47 @@ namespace ToDoList
       );
 
       app.Run();
+    }
+  }
+}
+*/
+
+/*
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+WebApplication app = builder.Build();
+
+app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.MapControllerRoute(
+  name: "default",
+  pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+
+app.Run();
+*/
+
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+
+namespace ToDoList
+{
+  public class Program
+  {
+    public static void Main(string[] args)
+    {
+      var host = new WebHostBuilder()
+        .UseKestrel()
+        .UseContentRoot(Directory.GetCurrentDirectory())
+        .UseIISIntegration()
+        .UseStartup<Startup>()
+        .Build();
+
+      host.Run();
     }
   }
 }
