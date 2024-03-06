@@ -1,6 +1,6 @@
-/*
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using ToDoList.Models;
 
 namespace ToDoList
 {
@@ -11,6 +11,8 @@ namespace ToDoList
       WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
       builder.Services.AddControllersWithViews();
+
+      DBConfiguration.ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
 
       WebApplication app = builder.Build();
 
@@ -27,7 +29,7 @@ namespace ToDoList
     }
   }
 }
-*/
+
 
 /*
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -46,7 +48,7 @@ app.MapControllerRoute(
 );
 
 app.Run();
-*/
+
 
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
@@ -68,3 +70,4 @@ namespace ToDoList
     }
   }
 }
+*/
