@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using ToDoList.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList
 {
@@ -12,11 +13,25 @@ namespace ToDoList
 
       builder.Services.AddControllersWithViews();
 
-      DBConfiguration.ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+      builder.Services.AddDbContext<ToDoListContext>(
+      // adding EF Core as a service to To Do List app
+      // `ToDoListContext` is a representation of MySQL database 
+        DbContextOptions => DbContextOptions
+        // `=>` syntax creates a lambda expression: a way to write an anonymous function in a condensed fashion 
+          .UseMySql(
+          // enabled with `AddDbContext<T>`
+              builder.Configuration["ConnectionStrings:DefaultConnection"], 
+              // `appsettings.json` implicitly loaded when beginning the process of building web app host by running `WebApplication.CreateBuilder(args)`
+              ServerVersion.AutoDetect(builder.Configuration["ConnectionStrings:DefaultConnection"]
+              // version of MySQL server - autodetected 
+            )
+          )
+      );
 
       WebApplication app = builder.Build();
 
       app.UseHttpsRedirection();
+      app.UseStaticFiles();
 
       app.UseRouting();
 
