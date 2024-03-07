@@ -1,59 +1,50 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Models;
+using System.Linq;
+// LINQ: Language-Integrated Query 
 
 namespace ToDoList.Controllers
 {
   public class ItemsController : Controller
   {
-    /*
-    [HttpGet("/items")]
+    private readonly ToDoListContext _db;
+    // declares a private and readonly field of type `ToDoListContext`
+    // property will hold database connection as the type
+    
+    public ItemsController(ToDoListContext db)
+    // parameter is passed an argument thru dependency injection when web app host is built - the arg passed into the constructor is the service set up in `Program.cs` (.AddDbContext<ToDoListContext> ...)
+    {
+      _db = db; 
+    }
+
     public ActionResult Index()
     {
-      List<Item> allItems = Item.GetAll();
-      return View(allItems);
-    }
-    */
-
-    [HttpGet("/categories/{categoryId}/items/new")]
-    public ActionResult New(int categoryId)
-    // changing `CreateForm()` to `New()` (RESTful convention)
-    {
-      Category category = Category.Find(categoryId);
-      return View(category);
-    }
-
-    /*
-    [HttpPost("/items")]
-    public ActionResult Create(string description)
-    // this route is invoked when form is submitted
-    // str param (description) matches the `name` attribute 
-    {
-      Item myItem = new Item(description);
-      //return View("Index", myItem);
-      // instead of `View()`, because no longer routing to a view with the same exact name as our route method
-      return RedirectToAction("Index");
-    }
-    */
-
-    [HttpGet("/categories/{categoryId}/items/{itemId}")]
-    public ActionResult Show(int categoryId, int itemId)
-    {
-      Item item = Item.Find(itemId);
-      Category category = Category.Find(categoryId);
-      Dictionary<string, object> model = new Dictionary<string, object>();
-      model.Add("item", item);
-      model.Add("category", category);
+      List<Item> model = _db.Items.ToList();
+      // `ToList()` method enabled with `using System.Linq` directive 
+      // thru this, `Item`s in `List` form is accessible without using a verbose `GetAll()` method with raw SQL 
+      // `db`: instance of `ToDoListContext` class 
+      // it'll look for an obj named `Items`
       return View(model);
     }
 
-    /*
-    [HttpPost("/items/delete")]
-    public ActionResult DeleteAll()
+    public ActionResult Create()
     {
-      Item.ClearAll();
       return View();
     }
-    */
+
+    [HttpPost]
+    public ActionResult Create(Item item)
+    {
+      _db.Items.Add(item);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    public ActionResult Details(int id)
+    {
+      Item thisItem = _db.Items.FirstOrDefault(item => item.ItemId == id);
+      return View(thisItem);
+    }
   }
 }
