@@ -4,38 +4,10 @@ namespace ToDoList.Models
 {
   public class Category
   {
-    private static List<Category> _instances = new List<Category> {};
+    public int CategoryId { get; set; }
     public string Name { get; set; }
-    public int Id { get; }
     public List<Item> Items { get; set; }
-    // using an auto-implemented property with `Items` and declaring data type as a `List` of `Items`.
-
-    public Category(string categoryName)
-    {
-      Name = categoryName;
-      _instances.Add(this);
-      Id = _instances.Count;
-      Items = new List<Item>{};
-    }
-
-    public static void ClearAll()
-    {
-      _instances.Clear();
-    }
-
-    public static List<Category> GetAll()
-    {
-      return _instances;
-    }
-
-    public static Category Find(int searchId)
-    {
-      return _instances[searchId - 1];
-    }
-
-    public void AddItem(Item item)
-    {
-      Items.Add(item);
-    }
+    // Category including a reference to a related entity like Item makes it a "navigation property"
+    // Item is a "collection navigation property" for it containing multiple entities, collection List<> of multiple Item objects. 
   }
 }

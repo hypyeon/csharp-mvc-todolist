@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoList.Models;
 using System.Linq;
 // LINQ: Language-Integrated Query 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ToDoList.Controllers
 {
@@ -20,22 +22,31 @@ namespace ToDoList.Controllers
 
     public ActionResult Index()
     {
-      List<Item> model = _db.Items.ToList();
+      List<Item> model = _db.Items.Include(item => item.Category).ToList();
       // `ToList()` method enabled with `using System.Linq` directive 
       // thru this, `Item`s in `List` form is accessible without using a verbose `GetAll()` method with raw SQL 
       // `db`: instance of `ToDoListContext` class 
       // it'll look for an obj named `Items`
+      //ViewBag.PageTitle = "View All Items";
+      // creating a property that is accessible in _Layout.cshtml file by setting the value of HTML element <title>, as in: <title>@ViewBag.PageTitle</title>
       return View(model);
     }
 
     public ActionResult Create()
     {
+      ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
+      // `SelectList()` thru `Microsoft.AspNetCore.Mvc.Rendering` directive
+      // <select> list will be created for all categories from database, each <option> will be Category's Name property, the value will be Category's CategoryId. 
       return View();
     }
 
     [HttpPost]
     public ActionResult Create(Item item)
     {
+      if (item.CategoryId == 0)
+      {
+        return RedirectToAction("Create");
+      }
       _db.Items.Add(item);
       _db.SaveChanges();
       return RedirectToAction("Index");
@@ -43,13 +54,14 @@ namespace ToDoList.Controllers
 
     public ActionResult Details(int id)
     {
-      Item thisItem = _db.Items.FirstOrDefault(item => item.ItemId == id);
+      Item thisItem = _db.Items.Include(item => item.Category).FirstOrDefault(item => item.ItemId == id);
       return View(thisItem);
     }
 
     public ActionResult Edit(int id)
     {
       Item thisItem = _db.Items.FirstOrDefault(item => item.ItemId == id);
+      ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
       return View(thisItem);
     }
 

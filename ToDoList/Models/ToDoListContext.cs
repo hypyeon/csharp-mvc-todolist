@@ -6,6 +6,7 @@ namespace ToDoList.Models
   // extending from EF Core's `DbContext` class 
   // ensuring inclusion of all default built-in `DbContext` functionality
   {
+    public DbSet<Category> Categories { get; set; }
     public DbSet<Item> Items { get; set; }
     // declaring an entity called Items in ToDoList database context 
 
