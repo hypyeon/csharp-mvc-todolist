@@ -22,7 +22,9 @@ namespace ToDoList.Controllers
 
     public ActionResult Index()
     {
-      List<Item> model = _db.Items.Include(item => item.Category).ToList();
+      List<Item> model = _db.Items
+        .Include(item => item.Category)
+        .ToList();
       // `ToList()` method enabled with `using System.Linq` directive 
       // thru this, `Item`s in `List` form is accessible without using a verbose `GetAll()` method with raw SQL 
       // `db`: instance of `ToDoListContext` class 
@@ -54,7 +56,12 @@ namespace ToDoList.Controllers
 
     public ActionResult Details(int id)
     {
-      Item thisItem = _db.Items.Include(item => item.Category).FirstOrDefault(item => item.ItemId == id);
+      Item thisItem = _db.Items
+        .Include(item => item.Category)
+        .Include(item => item.JoinEntities)
+        // using `.Include()`: can be done for as many navigation properties as there are that need to be fetched 
+        .ThenInclude(join => join.Tag)
+        .FirstOrDefault(item => item.ItemId == id);
       return View(thisItem);
     }
 
