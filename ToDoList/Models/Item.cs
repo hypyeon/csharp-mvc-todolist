@@ -10,5 +10,6 @@ namespace ToDoList.Models
     public int CategoryId { get; set; }
     public Category Category { get; set; }
     // navigation property in Item model that creates one-to-many relationship between Category and Item
+    public List<ItemTag> JoinEntities { get; }
   }
 }

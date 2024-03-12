@@ -9,6 +9,8 @@ namespace ToDoList.Models
     public DbSet<Category> Categories { get; set; }
     public DbSet<Item> Items { get; set; }
     // declaring an entity called Items in ToDoList database context 
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<ItemTag> ItemTags { get; set; }
 
     public ToDoListContext(DbContextOptions options) : base(options) { }
     // a constructor inheriting behavior of its parent class 
