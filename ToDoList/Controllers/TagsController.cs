@@ -105,5 +105,30 @@ namespace ToDoList.Controllers
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
+
+    public ActionResult Delete(int id)
+    {
+      Tag tag = _db.Tags
+        .FirstOrDefault(t => t.TagId == id);
+      return View(tag);
+    }
+    [HttpPost, ActionName("Delete")]
+    public ActionResult DeleteConfirmed(int id)
+    {
+      Tag thisTag = _db.Tags
+        .FirstOrDefault(tags => tags.TagId == id);
+      _db.Tags.Remove(thisTag);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+    [HttpPost]
+    public ActionResult DeleteJoin(int joinId)
+    {
+      ItemTag joinEntry = _db.ItemTags
+        .FirstOrDefault(entry => entry.ItemTagId == joinId);
+      _db.ItemTags.Remove(joinEntry);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
   }
 }
