@@ -91,5 +91,19 @@ namespace ToDoList.Controllers
       }
       return RedirectToAction("Details", new { id = item.ItemId });
     }  
+
+    public ActionResult Edit(int id)
+    {
+      Tag tag = _db.Tags
+        .FirstOrDefault(t => t.TagId == id);
+      return View(tag);
+    }
+    [HttpPost]
+    public ActionResult Edit(Tag tag)
+    {
+      _db.Tags.Update(tag);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
   }
 }
