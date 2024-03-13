@@ -2,15 +2,42 @@
   Layout = "_Layout";
 }
 
+@using ToDoList.Models;
+
 <h1>Welcome to the To Do List!</h1>
-<p>@Html.ActionLink("See all items", "Index", "Items")</p>
-<!--
-  html helper method
-  ActionLink() method requires at least 2 parameters:
-  1) 1st param: display text for the link 
-  2) 2nd param: target action in the controller 
-  2) 3rd param (optional): specifies the controller for the route 
--->
+
+<hr />
+
+<h4>Categories</h4>
+@if (Model["categories"].Length == 0)
+{
+  <p>No categories have been added yet.</p>
+}
+<ul>
+  @foreach (Category category in Model["categories"])
+  {
+    <li>
+      @Html.ActionLink(@category.Name, "Details", "Categories", new { id = @category.CategoryId })
+    </li>
+  }
+</ul>
+
+<h4>Items</h4>
+@if (Model["items"].Length == 0)
+{
+  <p>No items have been added yet.</p>
+}
+<ul>
+  @foreach (Item item in Model["items"])
+  {
+    <li>
+      @Html.ActionLink(@item.Description, "Details", "Items", new { id = @item.ItemId })
+    </li>
+  }
+</ul>
+
+<hr />
+
 <p>@Html.ActionLink("Add new item", "Create", "Items")</p>
 <p>@Html.ActionLink("See all categories", "Index", "Categories")</p>
 <p>@Html.ActionLink("See all tags", "Index", "Tags")</p>
