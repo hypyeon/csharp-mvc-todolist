@@ -68,30 +68,6 @@ namespace ToDoList.Controllers
       return RedirectToAction("Details", new { id = tag.TagId });
     }
 
-    public ActionResult AddTag(int id)
-    {
-      Item item = _db.Items
-        .FirstOrDefault(i => i.ItemId == id);
-      ViewBag.TagId = new SelectList(_db.Tags, "TagId", "Title");
-      return View(item);
-    }
-    [HttpPost]
-    public ActionResult AddTag(Item item, int tagId)
-    {
-      #nullable enable
-      ItemTag? joinEntity = _db.ItemTags
-        .FirstOrDefault(join => 
-          (join.TagId == tagId && join.ItemId == item.ItemId)
-        );
-      #nullable disable
-      if (joinEntity == null && tagId != 0)
-      {
-        _db.ItemTags.Add(new ItemTag() { TagId = tagId, ItemId = item.ItemId });
-        _db.SaveChanges();
-      }
-      return RedirectToAction("Details", new { id = item.ItemId });
-    }  
-
     public ActionResult Edit(int id)
     {
       Tag tag = _db.Tags
