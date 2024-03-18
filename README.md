@@ -2,9 +2,15 @@
 by Hayeong Pyeon
 
 ## Description
-- This app is created based on a class material and as a review of **Basic Web Applications** chapter of **C#** course provided by Epicodus. 
+- This app is created based on a class material and as a review of **C#** course provided by Epicodus. 
 - `.cs` files have notes and practices that are commented out for author's personal learning purpose. 
 - Initial setup done via git cloning from [here](https://github.com/epicodus-lessons/section-2-to-do-list-csharp-net6/tree/1_mvc_setup) (`1_mvc_setup` branch). 
+> [!NOTE]
+> There are 4 branches in total, each contains learning processes of C# course. To specify:
+> - `main`: Data Types, Variables, Branching, and Looping; Basic Console Apps; TDD and Debugging
+> - `ef-core`: Database Basics
+> - `m-to-m`: Many-To-Many Relationships
+> - `auth`: Authentication with Identity
 
 ## Setup Instructions
 *learning purpose*
