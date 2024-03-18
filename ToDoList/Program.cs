@@ -35,6 +35,19 @@ namespace ToDoList
         .AddDefaultTokenProviders();
       // added when installing identity
 
+      builder.Services.Configure<IdentityOptions>(options =>
+      {
+        // Default Password settings
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequiredLength = 6;
+        options.Password.RequiredUniqueChars = 1;
+        // values can be changed (true -> false, 6 -> 2, etc.)
+        // when updated, a corresponding update to [RegularExpression] validation attribute for the RegisterViewModel.Password property should also be made
+      });
+
       WebApplication app = builder.Build();
 
       app.UseHttpsRedirection();
@@ -55,45 +68,3 @@ namespace ToDoList
     }
   }
 }
-
-
-/*
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllersWithViews();
-
-WebApplication app = builder.Build();
-
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
-app.MapControllerRoute(
-  name: "default",
-  pattern: "{controller=Home}/{action=Index}/{id?}"
-);
-
-app.Run();
-
-
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-
-namespace ToDoList
-{
-  public class Program
-  {
-    public static void Main(string[] args)
-    {
-      var host = new WebHostBuilder()
-        .UseKestrel()
-        .UseContentRoot(Directory.GetCurrentDirectory())
-        .UseIISIntegration()
-        .UseStartup<Startup>()
-        .Build();
-
-      host.Run();
-    }
-  }
-}
-*/

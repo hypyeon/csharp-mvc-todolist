@@ -1,0 +1,34 @@
+@{
+  Layout = "_Layout";
+}
+
+@using ToDoList.ViewModels
+
+@model RegisterViewModel
+
+<h2>Register a new user</h2>
+<hr />
+
+@if(!ViewData.ModelState.IsValid) 
+// ViewData: a Dictionary that hold data passed to the view, including ModelState as well as any data available in ViewBag in controllers. 
+{
+  @Html.ValidationSummary("Please fix the following error(s) and then resubmit the form:") 
+  // ValidationSummary generates a bullet point list of all of the current errors 
+}
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+  @Html.LabelFor(user => user.Email)
+  @Html.TextBoxFor(user => user.Email)
+
+  @Html.LabelFor(user => user.Password)
+  @Html.EditorFor(user => user.Password)
+  // `EditorFor` helper method: chages input's type attribute based on DataType Password validation attribute (type="password"), turning input into black dots 
+
+  @Html.LabelFor(user => user.ConfirmPassword)
+  @Html.EditorFor(user => user.ConfirmPassword)
+
+  <input type="submit" value="Register" />
+}
+
+<p>@Html.ActionLink("Back to accounts page", "Index")</p>
