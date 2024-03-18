@@ -66,5 +66,41 @@ namespace ToDoList.Controllers
         }
       }
     }
+
+    public ActionResult Login()
+    {
+      return View();
+    }
+    [HttpPost]
+    public async Task<ActionResult> Login(LoginViewModel model)
+    {
+      if (!ModelState.IsValid)
+      {
+        return View(model);
+      }
+      else
+      {
+        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: true, lockoutOnFailure: false);
+        // an async method that allows users to sign in with a pw 
+        // PasswordSignInAsync() takes 4 parameters with 2 boolean values
+        if (result.Succeeded)
+        {
+          return RedirectToAction("Index");
+        }
+        else
+        {
+          ModelState.AddModelError("", "There is something wrong with your email or username. Please try again.");
+          // avoiding specific error messages that could improve user ability to break into an account 
+          return View(model);
+        }
+      }
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> LogOff()
+    {
+      await _signInManager.SignOutAsync();
+      return RedirectToAction("Index");
+    }
   }
 }
