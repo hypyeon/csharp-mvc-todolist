@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using ToDoList.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace ToDoList
 {
@@ -28,12 +29,22 @@ namespace ToDoList
           )
       );
 
+      builder.Services
+        .AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<ToDoListContext>()
+        .AddDefaultTokenProviders();
+      // added when installing identity
+
       WebApplication app = builder.Build();
 
       app.UseHttpsRedirection();
       app.UseStaticFiles();
 
       app.UseRouting();
+
+      app.UseAuthentication();
+      app.UseAuthorization();
+      // added when installing identity 
 
       app.MapControllerRoute(
         name: "default",

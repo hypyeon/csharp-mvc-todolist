@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+// added after adding package using dotnet
 
 namespace ToDoList.Models
 {
-  public class ToDoListContext : DbContext
-  // extending from EF Core's `DbContext` class 
-  // ensuring inclusion of all default built-in `DbContext` functionality
+  public class ToDoListContext : IdentityDbContext<ApplicationUser>
+  // replacing `DbContext` class 
+  // `ApplicationUser`: a type of `IdentityDbContext`, which tells Identity which class in the app will contain the user account info it will be responsible for authenticating
   {
     public DbSet<Category> Categories { get; set; }
     public DbSet<Item> Items { get; set; }
