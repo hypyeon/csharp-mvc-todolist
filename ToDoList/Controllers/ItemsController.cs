@@ -5,33 +5,49 @@ using System.Linq;
 // LINQ: Language-Integrated Query 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+// below added for authorization 
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+// to use `UserManager`
+using System.Threading.Tasks;
+// to call async methods 
+using System.Security.Claims;
+// to use claim based authorization; to identify a user thru a claim to get only the items associated with that user
 
 namespace ToDoList.Controllers
 {
+  [Authorize]
+  // this allows access to the controller only if a user is logged in 
+  // to allow unauthorized users to have access, use [AllowAnonymous]
   public class ItemsController : Controller
   {
     private readonly ToDoListContext _db;
     // declares a private and readonly field of type `ToDoListContext`
     // property will hold database connection as the type
+    private readonly UserManager<ApplicationUser> _userManager;
     
-    public ItemsController(ToDoListContext db)
+    public ItemsController(UserManager<ApplicationUser> userManager, ToDoListContext db)
     // parameter is passed an argument thru dependency injection when web app host is built - the arg passed into the constructor is the service set up in `Program.cs` (.AddDbContext<ToDoListContext> ...)
     {
       _db = db; 
+      _userManager = userManager;
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-      List<Item> model = _db.Items
+      string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      // `User`: a property of ItemsController, contains info about currently signed-in user 
+      // `FindFirst()`: a method that locates the first user record that meets the provided criteria 
+      // `ClaimTypes.NameIdentifier`: an argument to locate the unique ID associated with the currently signed in user account 
+      // `?`: an existential operator - by using this, calling the property, only if the method does not return `null`  
+      ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
+      // `FindByIdAsync`: a built-in id method to find a user's accoutn by their unique ID 
+      List<Item> userItems = _db.Items
+        .Where(entry => entry.User.Id == currentUser.Id)
+        // `Where`: a LINQ method to filter a collection in a way that echoes the logic of SQL Where clause 
         .Include(item => item.Category)
         .ToList();
-      // `ToList()` method enabled with `using System.Linq` directive 
-      // thru this, `Item`s in `List` form is accessible without using a verbose `GetAll()` method with raw SQL 
-      // `db`: instance of `ToDoListContext` class 
-      // it'll look for an obj named `Items`
-      //ViewBag.PageTitle = "View All Items";
-      // creating a property that is accessible in _Layout.cshtml file by setting the value of HTML element <title>, as in: <title>@ViewBag.PageTitle</title>
-      return View(model);
+      return View(userItems);
     }
 
     public ActionResult Create()
@@ -43,7 +59,7 @@ namespace ToDoList.Controllers
     }
 
     [HttpPost]
-    public ActionResult Create(Item item)
+    public async Tast<ActionResult> Create(Item item, int CategoryId)
     {
       if (!ModelState.IsValid)
       {
@@ -51,6 +67,9 @@ namespace ToDoList.Controllers
         return View(item);
       }
       else {
+        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
+        item.User = currentUser; 
         _db.Items.Add(item);
         _db.SaveChanges();
         return RedirectToAction("Index");
