@@ -10,12 +10,12 @@
 
 @using (Html.BeginForm())
 {
-    @Html.HiddenFor(model => model.TagId)
+  @Html.HiddenFor(model => model.TagId)
 
-    @Html.LabelFor(model => model.Title)
-    @Html.EditorFor(model => model.Title)
+  @Html.LabelFor(model => model.Title)
+  @Html.EditorFor(model => model.Title)
 
-    <input type="submit" value="Save" />
+  <input type="submit" value="Save" />
 }
 
 <p>@Html.ActionLink("Back to list", "Index")</p>
